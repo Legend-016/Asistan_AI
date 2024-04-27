@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistan_AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* CSS stilleri */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; /* Değiştirilen renk */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }        
+
+        .chat-container {
+            width: 100vw;
+            height: 100vh;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #00bcd4; /* Turkuaz renk */
+            color: #fff;
+            padding: 10px 0; /* padding değerleri güncellendi */
+            text-align: center;
+            position: relative;
+            display: flex; /* Düğmeleri yatay hizalamak için */
+            align-items: center;
+        }
+
+        .refresh-icon, .theme-toggle {
+            margin-left: auto; /* Yenileme simgesini ve tema değişikliği düğmesini sağ tarafa hizala */
+            margin-right: 20px; /* Yenileme simgesinden sağa boşluk */
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .refresh-icon:hover, .theme-toggle:hover {
+            opacity: 0.7; /* Üzerine gelindiğinde hafif bir opaklık */
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-footer {
+            background-color: #e0f7fa; /* Turkuaz açık tonu */
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .input-message {
+            flex: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin-right: 20px;
+        }
+
+        .send-button {
+            border: none;
+            background-color: #00bcd4; /* Turkuaz renk */
+            color: #fff;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .user-message {
+            text-align: right;
+            color: #00bcd4; /* Turkuaz renk */
+        }
+
+        .bot-message {
+            text-align: left;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <h2 style="margin: 0 auto;">Asistan</h2> <!-- Asistan yazısını ortala -->
+            <i class="fas fa-sync refresh-icon" onclick="refreshPage()"></i>
+        </div>
+        <div class="chat-body" id="chat">
+            <!-- Chat mesajları buraya eklenecek -->
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="message" class="input-message" placeholder="Mesajınızı yazın...">
+            <button onclick="sendMessage()" class="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div class="footer">
+            <p>Asistan kişilerde dahil olmak üzere hata yapabilir. Tüm hakları saklıdır.</p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function sendMessage() {
+            var message = document.getElementById("message").value;
+            document.getElementById("message").value = "";
+            document.getElementById("chat").innerHTML += '<div class="chat-message user-message">' + message + '</div>';
+            $.ajax({
+                url: "/send_chat",
+                type: "POST",
+                data: {message: message},
+                success: function(response) {
+                    document.getElementById("chat").innerHTML += '<div class="chat-message bot-message">' + response.response + '</div>';
+                }
+            });
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
