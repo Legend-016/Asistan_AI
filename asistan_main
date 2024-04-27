@@ -1,0 +1,33 @@
+# AIzaSyCY3PTdYUUaj_ThEpdmSAdKnIWaKShxGnc
+
+from flask import Flask, render_template, request
+import json
+import google.generativeai as genai
+
+
+app = Flask(__name__)
+
+# Chatbot ile iletişim sağlayacak route
+@app.route('/')
+def chat():
+    return render_template('index.html')
+
+# Kullanıcının gönderdiği mesajları chatbota iletme
+@app.route('/send_chat', methods=['POST'])
+def send_chat():
+    genai.configure(
+        api_key="AIzaSyCY3PTdYUUaj_ThEpdmSAdKnIWaKShxGnc")  # API anahtarınızı buraya ekleyin
+
+    # Gemini modelini başlat
+    model = genai.GenerativeModel('gemini-pro')
+
+    # Boş bir sohbet geçmişi ile bir sohbet başlat
+    chat = model.start_chat(history=[])
+    message = request.form['message']
+    # Chatbot ile iletişim sağlama kodları buraya eklenecek
+    response = chat.send_message(message)
+    bot_response = (f"\nAsistan: {response.text}\n")
+    return {'response': bot_response}
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
